@@ -26,7 +26,7 @@ def calculate_odds(ticket:TicketRequest):
     # 1. Base Calc - start with base of 100%, subtract points for long waitlist, add points if more days left for departur)
     probability = 100 - (ticket.waitlist_position * 1.5) + (ticket.days_left * 0.8)
 
-    # 2. Caoch Class Adjustment - Premium class have fewer seats aand fewer cancellations.
+    # 2. Coach Class Adjustment - Premium class have fewer seats and fewer cancellations.
     class_modifiers = {
         "Sleeper":10, # More seats, more chances of moving up
         "3 AC":0,
