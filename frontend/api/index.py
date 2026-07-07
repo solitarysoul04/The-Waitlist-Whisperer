@@ -1,20 +1,8 @@
 from fastapi import FastAPI, HTTPException, status
-from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-import os
 
 # Initializing API
 app = FastAPI(title = "The Waitlist Whisperer API")
-
-FRONTEND_URL = os.getenv("FRONTEND_URL")
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins = [FRONTEND_URL],
-    allow_credentials = True,
-    allow_methods = ["*"],
-    allow_headers = ["*"],   
-    )
 
 # Data Structure
 class TicketRequest(BaseModel):
@@ -23,7 +11,7 @@ class TicketRequest(BaseModel):
     coach_class: str
     seasonality: str
 
-@app.post("/predict")
+@app.post("/api/predict")
 def calculate_odds(ticket: TicketRequest):
     try:
         # 1. Base Calc - start with base of 100%, subtract points for long waitlist, add points if more days left for departure)
