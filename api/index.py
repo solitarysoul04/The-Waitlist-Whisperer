@@ -10,6 +10,7 @@ class TicketRequest(BaseModel):
     days_left: int
     coach_class: str
     seasonality: str
+    route_density: str
 
 @app.post("/api/predict")
 def calculate_odds(ticket: TicketRequest):
@@ -29,6 +30,11 @@ def calculate_odds(ticket: TicketRequest):
             probability -= 35
         elif ticket.seasonality == "Low Demand":
             probability += 15
+
+        if ticket.route_density == "High (Metro/Capital routes)":
+            probability -= 20
+        elif ticket.route_density == "Low (Regional/Rural)":
+            probability += 10
 
         final_prob = max(1.0, min(99.0, probability))
 
