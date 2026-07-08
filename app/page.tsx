@@ -1,10 +1,25 @@
 'use client';
 
 import { useState } from 'react';
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from 'recharts';
+
+interface TrendData {
+  days_remaining: number;
+  projected_position: number;
+}
 
 interface PredictionResult {
   calculated_probability: number;
   risk_tier: string;
+  projected_trend: TrendData[];
 }
 
 export default function Dashboard() {
@@ -159,6 +174,54 @@ export default function Dashboard() {
               <span className="mr-2 h-2 w-2 rounded-full currentColor bg-current animate-pulse"></span>
               {result.risk_tier}
             </div>
+
+            {result.projected_trend && result.projected_trend.length > 0 && (
+              <div className="mt-6 pt-8 border-t border-slate-700">
+                <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-6 text-left">
+                  Waitlist Clearance Trajectory
+                </h3>
+                <div className="h-64 w-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={result.projected_trend}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#334155" vertical={false} />
+                      <XAxis 
+                        dataKey="days_remaining" 
+                        stroke="#94a3b8" 
+                        tick={{ fill: '#94a3b8', fontSize: 12 }}
+                        tickFormatter={(value) => `${value}d`}
+                      />
+                      <YAxis 
+                        stroke="#94a3b8" 
+                        tick={{ fill: '#94a3b8', fontSize: 12 }}
+                        allowDecimals={false}
+                      />
+                      <Tooltip
+                       contentStyle={{
+                         backgroundColor: '#1e293b',
+                         borderColor: '#334155',
+                         borderRadius: '0.5rem',
+                         color: '#f8fafc',
+                       }}
+                       itemStyle={{ color: '#38bdf8', fontWeight: 'bold' }}
+                       labelFormatter={(value) => `Days Left: ${value}`}
+                       formatter={(value: any) => [
+                        value,
+                        'Position'
+                        ]}
+                      />
+                      <Line
+                        type="monotone"
+                        dataKey="projected_position"
+                        stroke="#38bdf8"
+                        strokeWidth={3}
+                        dot={{ r: 4, fill: '#0f172a', stroke: '#38bdf8', strokeWidth: 2 }}
+                        activeDot={{ r: 6, fill: '#38bdf8', stroke: '#fff' }}
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>
